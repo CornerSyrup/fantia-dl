@@ -7,6 +7,8 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
+
+	"github.com/KleinChiu/fantia-dl/core"
 )
 
 func main() {
@@ -38,8 +40,8 @@ func main() {
 		panic("post id is empty")
 	}
 
-	agent := NewAgent(*session)
-	api, err := FetchPost(agent, *postId)
+	agent := core.NewAgent(*session)
+	api, err := core.FetchPost(agent, *postId)
 	if err != nil {
 		panic(err)
 	}
@@ -56,10 +58,10 @@ func main() {
 			if content.DownloadURI == "" {
 				continue
 			}
-			DownloadContent(agent, root, BaseUrl+content.DownloadURI, content.Title)
+			core.DownloadContent(agent, root, core.BaseUrl+content.DownloadURI, content.Title)
 		case "photo_gellery":
 			for _, photo := range content.PostContentPhotos {
-				go DownloadContent(agent, root, photo.URL.Original, strconv.Itoa(photo.ID))
+				go core.DownloadContent(agent, root, photo.URL.Original, strconv.Itoa(photo.ID))
 			}
 		}
 	}
