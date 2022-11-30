@@ -11,7 +11,7 @@ import (
 )
 
 func NewAgent(session string) *http.Client {
-	url, _ := url.Parse(baseUrl)
+	url, _ := url.Parse(BaseUrl)
 	jar, _ := cookiejar.New(nil)
 
 	jar.SetCookies(url, []*http.Cookie{{
