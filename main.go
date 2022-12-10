@@ -16,6 +16,9 @@ func main() {
 	case "post":
 		fs = flag.NewFlagSet("post", flag.ExitOnError)
 		cmd = command.NewPostCommand(fs)
+	case "backnumber":
+		fs = flag.NewFlagSet("backnumber", flag.ExitOnError)
+		cmd = command.NewBacknumberCommand(fs)
 	default:
 		fmt.Fprintf(os.Stderr, "Usage:\n\n\tfantia-dl post [arguments]\n")
 		os.Exit(0)

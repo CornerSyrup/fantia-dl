@@ -58,3 +58,15 @@ func (p PostApi) JoinBasePath(base string) string {
 func (c PostApiPostContent) JoinBasePath(base string) string {
 	return filepath.Join(base, fmt.Sprintf("%d_%s", c.Plan.Price, c.Title))
 }
+
+func (p BackNumberApi) JoinBasePath(base string) string {
+
+	return filepath.Join(base, fmt.Sprintf("%d_%s", p.Backnumber.Fanclub.ID, p.Backnumber.Fanclub.FanclubName))
+}
+
+func (p BacknumberContent) JoinBasePath(base string) string {
+	var postId int
+	fmt.Sscanf(p.ParentPost.URL, "/posts/%d", &postId)
+
+	return filepath.Join(base, fmt.Sprintf("%d_%s", postId, p.ParentPost.Title), fmt.Sprintf("%d_%s", p.Plan.Price, p.Title))
+}
