@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io/fs"
 	"os"
-	"path/filepath"
 	"strconv"
 	"time"
 
@@ -55,22 +54,22 @@ func (p BacknumberParams) Execute() error {
 		return err
 	}
 
-	postRoot := api.JoinBasePath(p.global.dir)
-	os.MkdirAll(postRoot, fs.ModeDir)
+	bnRoot := api.JoinBasePath(p.global.dir)
+	os.MkdirAll(bnRoot, fs.ModeDir)
 
-	for _, post := range api.BacknumberContents {
-		contRoot := filepath.Join(postRoot, fmt.Sprintf("%d_%s", post.Plan.Price, post.Title))
-		os.MkdirAll(contRoot, fs.ModeDir)
+	for _, content := range api.BacknumberContents {
+		root := content.JoinBasePath(bnRoot)
+		os.MkdirAll(root, fs.ModeDir)
 
-		switch post.Category {
+		switch content.Category {
 		case "file":
-			if post.DownloadURI == "" {
+			if content.DownloadURI == "" {
 				continue
 			}
-			core.DownloadContent(agent, contRoot, core.BaseUrl+post.DownloadURI, post.Title)
+			core.DownloadContent(agent, root, core.BaseUrl+content.DownloadURI, content.Title)
 		case "photo_gallery":
-			for _, photo := range post.PostContentPhotos {
-				core.DownloadContent(agent, contRoot, photo.URL.Original, strconv.Itoa(photo.ID))
+			for _, photo := range content.PostContentPhotos {
+				core.DownloadContent(agent, root, photo.URL.Original, strconv.Itoa(photo.ID))
 			}
 		}
 	}
