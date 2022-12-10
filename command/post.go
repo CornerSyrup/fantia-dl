@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io/fs"
 	"os"
-	"path/filepath"
 	"strconv"
 
 	"github.com/KleinChiu/fantia-dl/core"
@@ -44,11 +43,11 @@ func (p PostParams) Execute() error {
 		return err
 	}
 
-	postRoot := filepath.Join(p.global.dir, fmt.Sprintf("%d_%s", api.Post.Fanclub.ID, api.Post.Fanclub.FanclubName), fmt.Sprintf("%d_%s", api.Post.ID, api.Post.Title))
+	postRoot := api.JoinBasePath(p.global.dir)
 	os.MkdirAll(postRoot, fs.ModeDir)
 
 	for _, content := range api.Post.PostContents {
-		root := filepath.Join(postRoot, fmt.Sprintf("%d_%s", content.Plan.Price, content.Title))
+		root := content.JoinBasePath(postRoot)
 		os.Mkdir(root, fs.ModeDir)
 
 		switch content.Category {

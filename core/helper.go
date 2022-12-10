@@ -50,3 +50,11 @@ func DownloadContent(agent *http.Client, dir string, url string, filename string
 		return n, nil
 	}
 }
+
+func (p PostApi) JoinBasePath(base string) string {
+	return filepath.Join(fmt.Sprintf("%d_%s", p.Post.Fanclub.ID, p.Post.Fanclub.FanclubName), fmt.Sprintf("%d_%s", p.Post.ID, p.Post.Title))
+}
+
+func (c PostApiPostContent) JoinBasePath(base string) string {
+	return filepath.Join(base, fmt.Sprintf("%d_%s", c.Plan.Price, c.Title))
+}
