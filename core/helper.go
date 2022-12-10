@@ -1,4 +1,4 @@
-package main
+package core
 
 import (
 	"fmt"
@@ -11,7 +11,7 @@ import (
 )
 
 func NewAgent(session string) *http.Client {
-	url, _ := url.Parse(baseUrl)
+	url, _ := url.Parse(BaseUrl)
 	jar, _ := cookiejar.New(nil)
 
 	jar.SetCookies(url, []*http.Cookie{{
@@ -49,4 +49,12 @@ func DownloadContent(agent *http.Client, dir string, url string, filename string
 	} else {
 		return n, nil
 	}
+}
+
+func (p PostApi) JoinBasePath(base string) string {
+	return filepath.Join(fmt.Sprintf("%d_%s", p.Post.Fanclub.ID, p.Post.Fanclub.FanclubName), fmt.Sprintf("%d_%s", p.Post.ID, p.Post.Title))
+}
+
+func (c PostApiPostContent) JoinBasePath(base string) string {
+	return filepath.Join(base, fmt.Sprintf("%d_%s", c.Plan.Price, c.Title))
 }

@@ -1,4 +1,4 @@
-package main
+package core
 
 import (
 	"encoding/json"
@@ -8,17 +8,17 @@ import (
 )
 
 const (
-	baseUrl = "https://fantia.jp"
+	BaseUrl = "https://fantia.jp"
 )
 
 // Endpoints
 const (
-	backnumberEndpoint = baseUrl + "/api/v1/fanclub/backnumbers/monthly_contents/plan/%d/month/%d%02d"
-	postEndpoint       = baseUrl + "/api/v1/posts/%d"
+	backnumberEndpoint = BaseUrl + "/api/v1/fanclub/backnumbers/monthly_contents/plan/%d/month/%d%02d"
+	postEndpoint       = BaseUrl + "/api/v1/posts/%d"
 )
 
 func FetchBacknumber(agent *http.Client, plan int, year int, month int) (*BackNumberApi, error) {
-	buf, err := FetchApi(agent, fmt.Sprintf(backnumberEndpoint, plan, year, month))
+	buf, err := fetchApi(agent, fmt.Sprintf(backnumberEndpoint, plan, year, month))
 	if err != nil {
 		return nil, err
 	}
@@ -33,7 +33,7 @@ func FetchBacknumber(agent *http.Client, plan int, year int, month int) (*BackNu
 }
 
 func FetchPost(agent *http.Client, id int) (*PostApi, error) {
-	buf, err := FetchApi(agent, fmt.Sprintf(postEndpoint, id))
+	buf, err := fetchApi(agent, fmt.Sprintf(postEndpoint, id))
 	if err != nil {
 		return nil, err
 	}
@@ -47,7 +47,7 @@ func FetchPost(agent *http.Client, id int) (*PostApi, error) {
 	return api, nil
 }
 
-func FetchApi(agent *http.Client, url string) ([]byte, error) {
+func fetchApi(agent *http.Client, url string) ([]byte, error) {
 	res, err := agent.Get(url)
 	if err != nil {
 		return nil, err
