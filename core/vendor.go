@@ -17,22 +17,22 @@ const (
 	postEndpoint       = BaseUrl + "/api/v1/posts/%d"
 )
 
-func FetchBacknumber(agent *http.Client, plan int, year int, month int) (*BackNumberApi, error) {
+func FetchBacknumber(agent *http.Client, plan int, year int, month int) (*Backnumber, error) {
 	buf, err := fetchApi(agent, fmt.Sprintf(backnumberEndpoint, plan, year, month))
 	if err != nil {
 		return nil, err
 	}
 
-	api := new(BackNumberApi)
+	api := new(BacknumberApi)
 	err = json.Unmarshal(buf, api)
 	if err != nil {
 		return nil, err
 	}
 
-	return api, err
+	return &api.Backnumber, err
 }
 
-func FetchPost(agent *http.Client, id int) (*PostApi, error) {
+func FetchPost(agent *http.Client, id int) (*Post, error) {
 	buf, err := fetchApi(agent, fmt.Sprintf(postEndpoint, id))
 	if err != nil {
 		return nil, err
@@ -44,7 +44,7 @@ func FetchPost(agent *http.Client, id int) (*PostApi, error) {
 		return nil, err
 	}
 
-	return api, nil
+	return &api.Post, nil
 }
 
 func fetchApi(agent *http.Client, url string) ([]byte, error) {

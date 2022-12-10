@@ -58,7 +58,7 @@ func (p BacknumberParams) Execute() error {
 	postRoot := api.JoinBasePath(p.global.dir)
 	os.MkdirAll(postRoot, fs.ModeDir)
 
-	for _, post := range api.Backnumber.BacknumberContents {
+	for _, post := range api.BacknumberContents {
 		contRoot := filepath.Join(postRoot, fmt.Sprintf("%d_%s", post.Plan.Price, post.Title))
 		os.MkdirAll(contRoot, fs.ModeDir)
 
