@@ -56,7 +56,7 @@ func (p PostParams) Execute() error {
 				continue
 			}
 			core.DownloadContent(agent, root, core.BaseUrl+content.DownloadURI, content.Title)
-		case "photo_gellery":
+		case "photo_gallery":
 			for _, photo := range content.PostContentPhotos {
 				core.DownloadContent(agent, root, photo.URL.Original, strconv.Itoa(photo.ID))
 			}
