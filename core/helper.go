@@ -51,10 +51,21 @@ func DownloadContent(agent *http.Client, dir string, url string, filename string
 	}
 }
 
-func (p PostApi) JoinBasePath(base string) string {
-	return filepath.Join(fmt.Sprintf("%d_%s", p.Post.Fanclub.ID, p.Post.Fanclub.FanclubName), fmt.Sprintf("%d_%s", p.Post.ID, p.Post.Title))
+func (p Post) JoinBasePath(base string) string {
+	return filepath.Join(fmt.Sprintf("%d_%s", p.Fanclub.ID, p.Fanclub.FanclubName), fmt.Sprintf("%d_%s", p.ID, p.Title))
 }
 
 func (c PostApiPostContent) JoinBasePath(base string) string {
 	return filepath.Join(base, fmt.Sprintf("%d_%s", c.Plan.Price, c.Title))
+}
+
+func (p Backnumber) JoinBasePath(base string) string {
+	return filepath.Join(base, fmt.Sprintf("%d_%s", p.Fanclub.ID, p.Fanclub.FanclubName))
+}
+
+func (p BacknumberContent) JoinBasePath(base string) string {
+	var postId int
+	fmt.Sscanf(p.ParentPost.URL, "/posts/%d", &postId)
+
+	return filepath.Join(base, fmt.Sprintf("%d_%s", postId, p.ParentPost.Title), fmt.Sprintf("%d_%s", p.Plan.Price, p.Title))
 }

@@ -46,7 +46,7 @@ func (p PostParams) Execute() error {
 	postRoot := api.JoinBasePath(p.global.dir)
 	os.MkdirAll(postRoot, fs.ModeDir)
 
-	for _, content := range api.Post.PostContents {
+	for _, content := range api.PostContents {
 		root := content.JoinBasePath(postRoot)
 		os.Mkdir(root, fs.ModeDir)
 
