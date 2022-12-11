@@ -61,14 +61,30 @@ func (p BacknumberParams) Execute() error {
 		root := content.JoinBasePath(bnRoot)
 		os.MkdirAll(root, fs.ModeDir)
 
+		src := content.ParentPost.Title
+		if len(content.Title) > 0 {
+			src += " - " + content.Title
+		}
+
 		switch content.Category {
 		case "file":
 			if content.DownloadURI == "" {
 				continue
 			}
+
+			if p.global.dryRun {
+				fmt.Fprintf(os.Stdout, "Will download file %s from %s\n", content.Filename, src)
+				continue
+			}
+
 			core.DownloadContent(agent, root, core.BaseUrl+content.DownloadURI, content.Title)
 		case "photo_gallery":
 			for _, photo := range content.PostContentPhotos {
+				if p.global.dryRun {
+					fmt.Fprintf(os.Stdout, "Will download photo %d from %s\n", photo.ID, src)
+					continue
+				}
+
 				core.DownloadContent(agent, root, photo.URL.Original, strconv.Itoa(photo.ID))
 			}
 		}
