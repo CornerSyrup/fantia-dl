@@ -55,9 +55,20 @@ func (p PostParams) Execute() error {
 			if content.DownloadURI == "" {
 				continue
 			}
+
+			if p.global.dryRun {
+				fmt.Fprintf(os.Stdout, "Will download file %s from %s\n", content.Filename, api.Title)
+				continue
+			}
+
 			core.DownloadContent(agent, root, core.BaseUrl+content.DownloadURI, content.Title)
 		case "photo_gallery":
 			for _, photo := range content.PostContentPhotos {
+				if p.global.dryRun {
+					fmt.Fprintf(os.Stdout, "Will download photo %d from %s\n", photo.ID, api.Title)
+					continue
+				}
+
 				core.DownloadContent(agent, root, photo.URL.Original, strconv.Itoa(photo.ID))
 			}
 		}

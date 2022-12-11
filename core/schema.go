@@ -179,7 +179,7 @@ type BacknumberContent struct {
 	// CommentCount int `json:"comment_count"`
 	PostContentPhotos []PostContentPhoto `json:"post_content_photos"`
 	// IsConverted bool   `json:"is_converted"`
-	// Filename    string `json:"filename"`
+	Filename    string `json:"filename"`
 	DownloadURI string `json:"download_uri"`
 	// HlsURI      string `json:"hls_uri"`
 }
@@ -405,6 +405,6 @@ type PostApiPostContent struct {
 	// } `json:"post_content_comment_data"`
 	// CommentCount int    `json:"comment_count"`
 	// IsConverted  bool   `json:"is_converted,omitempty"`
-	// Filename     string `json:"filename,omitempty"`
+	Filename    string `json:"filename,omitempty"`
 	DownloadURI string `json:"download_uri,omitempty"`
 }
