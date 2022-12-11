@@ -77,7 +77,7 @@ func (p BacknumberParams) Execute() error {
 				continue
 			}
 
-			core.DownloadContent(agent, root, core.BaseUrl+content.DownloadURI, content.Title)
+			core.DownloadContent(agent, root, core.BaseUrl+content.DownloadURI, content.Title, p.global.overwrite)
 		case "photo_gallery":
 			for _, photo := range content.PostContentPhotos {
 				if p.global.dryRun {
@@ -85,7 +85,7 @@ func (p BacknumberParams) Execute() error {
 					continue
 				}
 
-				core.DownloadContent(agent, root, photo.URL.Original, strconv.Itoa(photo.ID))
+				core.DownloadContent(agent, root, photo.URL.Original, strconv.Itoa(photo.ID), p.global.overwrite)
 			}
 		}
 	}
