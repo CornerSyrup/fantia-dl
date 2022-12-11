@@ -103,8 +103,10 @@ func (p BacknumberParams) Execute() error {
 				continue
 			}
 
-			_, path, _ := core.DownloadContent(wg, agent, root, core.BaseUrl+content.DownloadURI, content.Title, p.global.overwrite)
-			os.Chtimes(path, time.Now(), content.ParentPost.Date)
+			go func(content core.BacknumberContent) {
+				_, path, _ := core.DownloadContent(wg, agent, root, core.BaseUrl+content.DownloadURI, content.Title, p.global.overwrite)
+				os.Chtimes(path, time.Now(), content.ParentPost.Date)
+			}(content)
 		case "photo_gallery":
 			for _, photo := range content.PostContentPhotos {
 				if p.global.dryRun {
@@ -112,8 +114,10 @@ func (p BacknumberParams) Execute() error {
 					continue
 				}
 
-				_, path, _ := core.DownloadContent(wg, agent, root, photo.URL.Original, strconv.Itoa(photo.ID), p.global.overwrite)
-				os.Chtimes(path, time.Now(), content.ParentPost.Date)
+				go func(content core.BacknumberContent, photo core.PostContentPhoto) {
+					_, path, _ := core.DownloadContent(wg, agent, root, photo.URL.Original, strconv.Itoa(photo.ID), p.global.overwrite)
+					os.Chtimes(path, time.Now(), content.ParentPost.Date)
+				}(content, photo)
 			}
 		}
 	}
