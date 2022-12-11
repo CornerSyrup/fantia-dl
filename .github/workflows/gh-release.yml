@@ -1,0 +1,32 @@
+name: Deploy to GitHub Release
+
+on:
+    push:
+        tags:
+            - v1.*
+
+    workflow_dispatch:
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v3
+
+            - name: Prepare Go
+              uses: actions/setup-go@v3
+              with:
+                  go-version: 1.19
+
+            - name: Build Fantia-DL for windows
+              run: go build
+              env:
+                  GOOS: windows
+                  GOARCH: 386
+
+            - name: Release executable
+              uses: softprops/action-gh-release@v1
+              with:
+                  files: |
+                      fantia-dl.exe
