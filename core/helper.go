@@ -36,6 +36,7 @@ func DownloadContent(agent *http.Client, dir string, url string, filename string
 	} else if res.StatusCode != http.StatusOK {
 		return 0, fmt.Errorf("unexpected status code of %d", res.StatusCode)
 	}
+	defer res.Body.Close()
 
 	fp := filepath.Join(dir, filename+filepath.Ext(res.Request.URL.Path))
 	f, err := os.Create(fp)
