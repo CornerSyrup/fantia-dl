@@ -21,7 +21,7 @@ type GlobalParams struct {
 func addGlobalFlags(fs *flag.FlagSet, gp *GlobalParams) {
 	fs.StringVar(&gp.session, "session", "", "Session ID which has been logged in to Fantia")
 	fs.StringVar(&gp.dir, "dir", "", "Directory to store the downloaded contents")
-	fs.BoolVar(&gp.dryRun, "dry-run", false, "Only list out all content to be downloaded, will not download anything or create folder")
+	fs.BoolVar(&gp.dryRun, "dry-run", false, "Only list out all content to be downloaded, will not download anything")
 }
 
 func sanitizeGlobalParam(g GlobalParams) error {
