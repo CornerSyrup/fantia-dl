@@ -9,6 +9,7 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 func NewAgent(session string) *http.Client {
@@ -39,7 +40,7 @@ func DownloadContent(agent *http.Client, dir string, url string, filename string
 	}
 	defer res.Body.Close()
 
-	fp := filepath.Join(dir, filename+filepath.Ext(res.Request.URL.Path))
+	fp := filepath.Join(dir, pathSafeString(filename)+filepath.Ext(res.Request.URL.Path))
 	if _, err := os.Stat(fp); !errors.Is(err, os.ErrNotExist) && !overwrite {
 		return 0, fp, nil
 	}
@@ -60,20 +61,31 @@ func DownloadContent(agent *http.Client, dir string, url string, filename string
 }
 
 func (p Post) JoinBasePath(base string) string {
-	return filepath.Join(fmt.Sprintf("%d_%s", p.Fanclub.ID, p.Fanclub.FanclubName), fmt.Sprintf("%d_%s", p.ID, p.Title))
+	return filepath.Join(fmt.Sprintf("%d_%s", p.Fanclub.ID, pathSafeString(p.Fanclub.FanclubName)), fmt.Sprintf("%d_%s", p.ID, pathSafeString(p.Title)))
 }
 
 func (c PostApiPostContent) JoinBasePath(base string) string {
-	return filepath.Join(base, fmt.Sprintf("%d_%s", c.Plan.Price, c.Title))
+	return filepath.Join(base, fmt.Sprintf("%d_%s", c.Plan.Price, pathSafeString(c.Title)))
 }
 
 func (p Backnumber) JoinBasePath(base string) string {
-	return filepath.Join(base, fmt.Sprintf("%d_%s", p.Fanclub.ID, p.Fanclub.FanclubName))
+	return filepath.Join(base, fmt.Sprintf("%d_%s", p.Fanclub.ID, pathSafeString(p.Fanclub.FanclubName)))
 }
 
 func (p BacknumberContent) JoinBasePath(base string) string {
 	var postId int
 	fmt.Sscanf(p.ParentPost.URL, "/posts/%d", &postId)
 
-	return filepath.Join(base, fmt.Sprintf("%d_%s", postId, p.ParentPost.Title), fmt.Sprintf("%d_%s", p.Plan.Price, p.Title))
+	return filepath.Join(base, fmt.Sprintf("%d_%s", postId, pathSafeString(p.ParentPost.Title)), fmt.Sprintf("%d_%s", p.Plan.Price, pathSafeString(p.Title)))
+}
+
+func pathSafeString(s string) string {
+	result := s
+	illegal := `/\:*?"<>|`
+
+	for _, i := range illegal {
+		result = strings.ReplaceAll(result, string(i), "_")
+	}
+
+	return result
 }
