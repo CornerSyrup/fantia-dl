@@ -6,6 +6,7 @@ import (
 	"io/fs"
 	"os"
 	"strconv"
+	"time"
 
 	"github.com/KleinChiu/fantia-dl/core"
 )
@@ -61,7 +62,8 @@ func (p PostParams) Execute() error {
 				continue
 			}
 
-			core.DownloadContent(agent, root, core.BaseUrl+content.DownloadURI, content.Title, p.global.overwrite)
+			_, path, _ := core.DownloadContent(agent, root, core.BaseUrl+content.DownloadURI, content.Title, p.global.overwrite)
+			os.Chtimes(path, time.Now(), content.ParentPost.Date)
 		case "photo_gallery":
 			for _, photo := range content.PostContentPhotos {
 				if p.global.dryRun {
@@ -69,7 +71,8 @@ func (p PostParams) Execute() error {
 					continue
 				}
 
-				core.DownloadContent(agent, root, photo.URL.Original, strconv.Itoa(photo.ID), p.global.overwrite)
+				_, path, _ := core.DownloadContent(agent, root, photo.URL.Original, strconv.Itoa(photo.ID), p.global.overwrite)
+				os.Chtimes(path, time.Now(), content.ParentPost.Date)
 			}
 		}
 	}

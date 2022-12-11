@@ -30,31 +30,33 @@ func NewAgent(session string) *http.Client {
 	}
 }
 
-func DownloadContent(agent *http.Client, dir string, url string, filename string, overwrite bool) (int64, error) {
+func DownloadContent(agent *http.Client, dir string, url string, filename string, overwrite bool) (int64, string, error) {
 	res, err := agent.Get(url)
 	if err != nil {
-		return 0, err
+		return 0, "", err
 	} else if res.StatusCode != http.StatusOK {
-		return 0, fmt.Errorf("unexpected status code of %d", res.StatusCode)
+		return 0, "", fmt.Errorf("unexpected status code of %d", res.StatusCode)
 	}
 	defer res.Body.Close()
 
 	fp := filepath.Join(dir, filename+filepath.Ext(res.Request.URL.Path))
 	if _, err := os.Stat(fp); !errors.Is(err, os.ErrNotExist) && !overwrite {
-		return 0, nil
+		return 0, fp, nil
 	}
 
 	f, err := os.Create(fp)
 	if err != nil {
-		return 0, err
+		return 0, "", err
 	}
 	defer f.Close()
 
-	if n, err := io.Copy(f, res.Body); err != nil {
-		return 0, err
-	} else {
-		return n, nil
+	n, err := io.Copy(f, res.Body)
+	if err != nil {
+		os.Remove(fp)
+		return 0, "", err
 	}
+
+	return n, fp, nil
 }
 
 func (p Post) JoinBasePath(base string) string {
