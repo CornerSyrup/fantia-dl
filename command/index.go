@@ -13,15 +13,17 @@ type Command interface {
 }
 
 type GlobalParams struct {
-	session string
-	dir     string
-	dryRun  bool
+	session   string
+	dir       string
+	dryRun    bool
+	overwrite bool
 }
 
 func addGlobalFlags(fs *flag.FlagSet, gp *GlobalParams) {
 	fs.StringVar(&gp.session, "session", "", "Session ID which has been logged in to Fantia")
 	fs.StringVar(&gp.dir, "dir", "", "Directory to store the downloaded contents")
 	fs.BoolVar(&gp.dryRun, "dry-run", false, "Only list out all content to be downloaded, will not download anything")
+	fs.BoolVar(&gp.overwrite, "overwrite", false, "Overwrite existing content")
 }
 
 func sanitizeGlobalParam(g GlobalParams) error {
