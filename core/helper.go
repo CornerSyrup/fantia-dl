@@ -1,6 +1,7 @@
 package core
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -29,7 +30,7 @@ func NewAgent(session string) *http.Client {
 	}
 }
 
-func DownloadContent(agent *http.Client, dir string, url string, filename string) (int64, error) {
+func DownloadContent(agent *http.Client, dir string, url string, filename string, overwrite bool) (int64, error) {
 	res, err := agent.Get(url)
 	if err != nil {
 		return 0, err
@@ -39,6 +40,10 @@ func DownloadContent(agent *http.Client, dir string, url string, filename string
 	defer res.Body.Close()
 
 	fp := filepath.Join(dir, filename+filepath.Ext(res.Request.URL.Path))
+	if _, err := os.Stat(fp); !errors.Is(err, os.ErrNotExist) && !overwrite {
+		return 0, nil
+	}
+
 	f, err := os.Create(fp)
 	if err != nil {
 		return 0, err
