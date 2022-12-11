@@ -9,6 +9,7 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+	"sync"
 )
 
 func NewAgent(session string) *http.Client {
@@ -30,7 +31,10 @@ func NewAgent(session string) *http.Client {
 	}
 }
 
-func DownloadContent(agent *http.Client, dir string, url string, filename string, overwrite bool) (int64, string, error) {
+func DownloadContent(wg *sync.WaitGroup, agent *http.Client, dir string, url string, filename string, overwrite bool) (int64, string, error) {
+	wg.Add(1)
+	defer wg.Done()
+
 	res, err := agent.Get(url)
 	if err != nil {
 		return 0, "", err

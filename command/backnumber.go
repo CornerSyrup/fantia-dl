@@ -8,6 +8,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/KleinChiu/fantia-dl/core"
@@ -71,6 +72,8 @@ func (p BacknumberParams) Sanitize() error {
 }
 
 func (p BacknumberParams) Execute() error {
+	wg := new(sync.WaitGroup)
+
 	agent := core.NewAgent(p.global.session)
 	api, err := core.FetchBacknumber(agent, p.plan, p.year, p.month)
 	if err != nil {
@@ -100,7 +103,7 @@ func (p BacknumberParams) Execute() error {
 				continue
 			}
 
-			_, path, _ := core.DownloadContent(agent, root, core.BaseUrl+content.DownloadURI, content.Title, p.global.overwrite)
+			_, path, _ := core.DownloadContent(wg, agent, root, core.BaseUrl+content.DownloadURI, content.Title, p.global.overwrite)
 			os.Chtimes(path, time.Now(), content.ParentPost.Date)
 		case "photo_gallery":
 			for _, photo := range content.PostContentPhotos {
@@ -109,11 +112,13 @@ func (p BacknumberParams) Execute() error {
 					continue
 				}
 
-				_, path, _ := core.DownloadContent(agent, root, photo.URL.Original, strconv.Itoa(photo.ID), p.global.overwrite)
+				_, path, _ := core.DownloadContent(wg, agent, root, photo.URL.Original, strconv.Itoa(photo.ID), p.global.overwrite)
 				os.Chtimes(path, time.Now(), content.ParentPost.Date)
 			}
 		}
 	}
+
+	wg.Wait()
 
 	return nil
 }
