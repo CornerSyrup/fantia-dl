@@ -1,5 +1,12 @@
 # Fantia DL
 
+![GitHub](https://img.shields.io/github/license/KleinChiu/fantia-dl)
+![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/kleinchiu/fantia-dl)
+![GitHub all releases](https://img.shields.io/github/downloads/kleinchiu/fantia-dl/total)
+[![Deploy to GitHub Release](https://github.com/KleinChiu/fantia-dl/actions/workflows/gh-release.yml/badge.svg)](https://github.com/KleinChiu/fantia-dl/actions/workflows/gh-release.yml)
+[![CodeFactor](https://www.codefactor.io/repository/github/kleinchiu/fantia-dl/badge)](https://www.codefactor.io/repository/github/kleinchiu/fantia-dl)
+![Snyk Vulnerabilities for GitHub Repo](https://img.shields.io/snyk/vulnerabilities/github/KleinChiu/fantia-dl)
+
 [Fantia](https://fantia.jp/)からコンテンツをダウンロードする CLI ツール
 
 ## インストール
