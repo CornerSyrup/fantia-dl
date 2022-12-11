@@ -4,8 +4,10 @@ import (
 	"flag"
 	"fmt"
 	"io/fs"
+	"net/url"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/KleinChiu/fantia-dl/core"
@@ -25,6 +27,27 @@ func NewBacknumberCommand(fs *flag.FlagSet) *BacknumberParams {
 	fs.IntVar(&cmd.year, "year", 0, "Year of the back number issue")
 	fs.IntVar(&cmd.month, "month", 0, "Month of the back number issue")
 	fs.IntVar(&cmd.plan, "plan", 0, "Plan of the back number")
+	fs.Func("url", "Backnumber URL", func(s string) error {
+		raw, err := url.Parse(s)
+		if err != nil {
+			return fmt.Errorf("invalid url")
+		}
+
+		path := strings.Split(raw.Path, "/")
+		if path[3] != "backnumbers" {
+			return fmt.Errorf("invalid backnumber url")
+		}
+
+		m := raw.Query().Get("month")
+		if len(m) != 6 {
+			return fmt.Errorf("invalid backnumber url")
+		}
+		cmd.year, _ = strconv.Atoi(m[0:4])
+		cmd.month, _ = strconv.Atoi(m[4:])
+		cmd.plan, _ = strconv.Atoi(raw.Query().Get("plan"))
+
+		return nil
+	})
 
 	return cmd
 }

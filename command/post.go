@@ -4,8 +4,10 @@ import (
 	"flag"
 	"fmt"
 	"io/fs"
+	"net/url"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/KleinChiu/fantia-dl/core"
@@ -21,6 +23,26 @@ func NewPostCommand(fs *flag.FlagSet) *PostParams {
 	addGlobalFlags(fs, &cmd.global)
 
 	fs.IntVar(&cmd.postId, "post", 0, "Post ID")
+	fs.Func("url", "Post url", func(s string) error {
+		raw, err := url.Parse(s)
+		if err != nil {
+			return fmt.Errorf("invalid url")
+		}
+
+		path := strings.Split(raw.Path, "/")
+		if path[1] != "posts" {
+			return fmt.Errorf("invalid post url")
+		}
+
+		n, err := strconv.Atoi(path[2])
+		if err != nil {
+			return fmt.Errorf("invalid post url")
+		}
+
+		cmd.postId = n
+
+		return nil
+	})
 
 	return cmd
 }
