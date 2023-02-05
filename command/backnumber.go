@@ -72,7 +72,7 @@ func (p BacknumberParams) Sanitize() error {
 
 func (p BacknumberParams) Execute() error {
 	agent := core.NewAgent(p.global.session)
-	api, err := core.FetchBacknumber(agent, p.plan, p.year, p.month)
+	api, err := core.FetchBacknumber(agent, p.global.token, p.plan, p.year, p.month)
 	if err != nil {
 		return err
 	}

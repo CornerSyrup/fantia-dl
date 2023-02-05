@@ -61,7 +61,7 @@ func (p PostParams) Sanitize() error {
 
 func (p PostParams) Execute() error {
 	agent := core.NewAgent(p.global.session)
-	api, err := core.FetchPost(agent, p.postId)
+	api, err := core.FetchPost(agent, p.global.token, p.postId)
 	if err != nil {
 		return err
 	}
