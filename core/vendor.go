@@ -7,6 +7,8 @@ import (
 	"net/http"
 )
 
+const USER_AGENT = "fantia-dl (https://github.com/kleinchiu/fantia-dl)"
+
 const (
 	BaseUrl = "https://fantia.jp"
 )
@@ -17,8 +19,8 @@ const (
 	postEndpoint       = BaseUrl + "/api/v1/posts/%d"
 )
 
-func FetchBacknumber(agent *http.Client, plan int, year int, month int) (*Backnumber, error) {
-	buf, err := fetchApi(agent, fmt.Sprintf(backnumberEndpoint, plan, year, month))
+func FetchBacknumber(agent *http.Client, token string, plan int, year int, month int) (*Backnumber, error) {
+	buf, err := fetchApi(agent, token, fmt.Sprintf(backnumberEndpoint, plan, year, month))
 	if err != nil {
 		return nil, err
 	}
@@ -32,8 +34,8 @@ func FetchBacknumber(agent *http.Client, plan int, year int, month int) (*Backnu
 	return &api.Backnumber, err
 }
 
-func FetchPost(agent *http.Client, id int) (*Post, error) {
-	buf, err := fetchApi(agent, fmt.Sprintf(postEndpoint, id))
+func FetchPost(agent *http.Client, token string, id int) (*Post, error) {
+	buf, err := fetchApi(agent, token, fmt.Sprintf(postEndpoint, id))
 	if err != nil {
 		return nil, err
 	}
@@ -47,10 +49,20 @@ func FetchPost(agent *http.Client, id int) (*Post, error) {
 	return &api.Post, nil
 }
 
-func fetchApi(agent *http.Client, url string) ([]byte, error) {
-	res, err := agent.Get(url)
+func fetchApi(agent *http.Client, token string, url string) ([]byte, error) {
+	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return nil, err
+	}
+	req.Header.Set("X-CSRF-Token", token)
+	req.Header.Set("User-Agent", USER_AGENT)
+
+	res, err := agent.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	if res.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("fail to query Fantia API")
 	}
 	defer res.Body.Close()
 
