@@ -48,9 +48,18 @@ func FetchPost(agent *http.Client, id int) (*Post, error) {
 }
 
 func fetchApi(agent *http.Client, url string) ([]byte, error) {
-	res, err := agent.Get(url)
+	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return nil, err
+	}
+	req.Header.Set("X-CSRF-Token", "COiUCik3fbywpa8YBjAkC3tKwYo3E7qf8lOO0OIrBUHhNGugft-3jqx2zryoEV6XhoSgZn3oglpmgG1NRgyN-g")
+
+	res, err := agent.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	if res.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("fail to query Fantia API")
 	}
 	defer res.Body.Close()
 
