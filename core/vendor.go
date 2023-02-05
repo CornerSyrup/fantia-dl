@@ -7,6 +7,8 @@ import (
 	"net/http"
 )
 
+const USER_AGENT = "fantia-dl (https://github.com/kleinchiu/fantia-dl)"
+
 const (
 	BaseUrl = "https://fantia.jp"
 )
@@ -53,6 +55,7 @@ func fetchApi(agent *http.Client, token string, url string) ([]byte, error) {
 		return nil, err
 	}
 	req.Header.Set("X-CSRF-Token", token)
+	req.Header.Set("User-Agent", USER_AGENT)
 
 	res, err := agent.Do(req)
 	if err != nil {
